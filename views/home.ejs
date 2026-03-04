@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 900px;
+            margin: 30px auto;
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 60%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #667eea;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #5a67d8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+
+        thead {
+            background-color: #667eea;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f3f3f3;
+        }
+
+        tr:hover {
+            background-color: #e2e8f0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* ✅ Redirect URL column styling */
+        .redirect-col {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ✅ Short URL column styling */
+        .shorturl-col {
+            max-width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>🔗 URL Shortener</h1>
+
+    <div class="container">
+
+        <form method="POST" action="/url">
+            <label>Enter your original URL</label><br><br>
+            <input 
+                type="text"
+                name="url"
+                placeholder="https://example.com"
+                required
+            />
+            <button type="submit">Generate</button>
+        </form>
+
+        <% if (urls && urls.length > 0) { %>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Short ID</th>
+                        <th>Short URL</th>
+                        <th>Redirect URL</th>
+                        <th>Clicks</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% urls.forEach((url, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+
+                            <!-- Short ID -->
+                            <td>
+                                <a href="/url/<%= url.shortId %>" target="_blank">
+                                    <%= url.shortId %>
+                                </a>
+                            </td>
+
+                            <!-- Full Short URL -->
+                            <td class="shorturl-col"
+                                title="http://localhost:8001/url/<%= url.shortId %>">
+                                <a href="/url/<%= url.shortId %>" target="_blank">
+                                    http://localhost:8001/url/<%= url.shortId %>
+                                </a>
+                            </td>
+
+                            <!-- Original Redirect URL -->
+                            <td class="redirect-col"
+                                title="<%= url.redirectURL %>">
+                                <a href="<%= url.redirectURL %>" target="_blank">
+                                    <%= url.redirectURL %>
+                                </a>
+                            </td>
+
+                            <!-- Click Count -->
+                            <td><%= url.visitHistory.length %></td>
+
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+
+        <% } %>
+
+    </div>
+
+</body>
+</html>
